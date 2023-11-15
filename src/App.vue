@@ -1,5 +1,14 @@
 <script>
 export default {
+  name: 'App',
+
+  data(){
+    return{
+      username: '',
+      password: '',
+    }
+  },
+
   methods: {
     login(){
       const requestOptions = {
@@ -12,7 +21,7 @@ export default {
           'Access-Control-Allow-Credentials': 'true',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization'
         },
-        body: JSON.stringify({grant_type: '', username: '', password: '', scope: '', client_id: '', client_secret: ''})
+        body: JSON.stringify({grant_type: '', username: this.username, password: this.password, scope: '', client_id: '', client_secret: ''})
       };
 
       fetch('http://127.0.0.1:8000/token', requestOptions)
@@ -30,16 +39,16 @@ export default {
           <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
           <div class="form-floating">
-            <input type="text" class="form-control" id="floatingInput" placeholder="username">
+            <input v-bind:value="username" type="text" class="form-control" id="floatingInput" placeholder="username">
             <label for="floatingInput">Username</label>
           </div>
 
           <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <input v-bind:value="password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
             <label for="floatingPassword">Password</label>
           </div>
 
-          <button class="btn btn-primary w-100 py-2">Sign in</button>
+          <button class="btn btn-primary w-100 py-2" @click="login">Sign in</button>
           <p class="mt-5 mb-3 text-body-secondary">&copy; 2023</p>
         </form>
       </div>
