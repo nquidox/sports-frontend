@@ -16,7 +16,7 @@ export default {
   methods: {
     login(){
       const auth = `grant_type=&username=${this.form.username}&password=${this.form.password}&scope=&client_id=&client_secret=`
-      axios.post("https://127.0.0.1:8000/token", auth).then(response => console.log(response));
+      axios.post("http://127.0.0.1:8000/token", auth).then(response => console.log(response));
     },
   },
 }
