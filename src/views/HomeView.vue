@@ -6,21 +6,29 @@ export default {
 
   data(){
     return{
+      token: localStorage.getItem('access_token'),
       isAuth: false,
-      userData: ''
+      userData: '',
+      tokenData: '',
+
     }
   },
 
   methods: {
     getUserData(){
-      axios.get('http://127.0.0.1:8000/user/1', {headers:{
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
-          .then(response => this.userData = response.data)
+      axios.get(`http://127.0.0.1:8000/user/${this.tokenData['sub']}/`, {headers:{
+        'Authorization': `Bearer ${this.token}`}})
+          .then(response => this.userData = response.data);
+    },
+
+    parseToken(){
+      this.tokenData = JSON.parse(atob(this.token.split('.')[1]));
     }
   },
 
   mounted() {
     if (localStorage.getItem('access_token')){
+      this.parseToken();
       this.getUserData();
       this.isAuth = true;
     } else {
