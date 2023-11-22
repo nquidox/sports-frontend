@@ -6,23 +6,39 @@ export default {
 
   data(){
     return{
+      apiPath: 'http://127.0.0.1:8000',
       token: localStorage.getItem('access_token'),
       isAuth: false,
       userData: '',
       tokenData: '',
-
+      activityType: '',
+      activitiesData: '',
     }
   },
 
+  computed:{
+    pathUsername(){
+      return this.tokenData['sub']
+    }
+  },
+
+
   methods: {
     getUserData(){
-      axios.get(`http://127.0.0.1:8000/user/${this.tokenData['sub']}/`, {headers:{
+      axios.get(`${this.apiPath}/user/${this.pathUsername}/`, {headers:{
         'Authorization': `Bearer ${this.token}`}})
           .then(response => this.userData = response.data);
     },
 
     parseToken(){
       this.tokenData = JSON.parse(atob(this.token.split('.')[1]));
+    },
+
+    getActivities(){
+      axios.get(`${this.apiPath}/${this.pathUsername}/activities/${this.activityType}/`, {headers:{
+          'Authorization': `Bearer ${this.token}`}})
+          .then(response => this.activitiesData = response.data);
+
     }
   },
 
@@ -39,19 +55,39 @@ export default {
 </script>
 
 <template>
-  <div v-if="isAuth === false">
-    <h3 class="text-center mt-3">Welcome! You need to log in.</h3>
-  </div>
+  <div class="container">
+    <div class="row">
+      <div v-if="isAuth === false" class="col">
+        <h3 class="text-center mt-3">Welcome! You need to log in.</h3>
+      </div>
 
-  <div v-if="isAuth === true">
-    <h3  class="text-center mt-3">Welcome, {{ userData.username }}!</h3>
-    <h3>User data:</h3>
-    <ul>
-      <li>Username: {{ userData.username }}</li>
-      <li>First name: {{ userData.first_name }}</li>
-      <li>Last name: {{ userData.last_name }}</li>
-      <li>Birthday: {{ userData.birthday }}</li>
-      <li>Gender: {{ userData.gender }}</li>
+      <div v-if="isAuth === true" class="col">
+        <h3  class="text-center mt-3">Welcome, {{ userData.username }}!</h3>
+        <h3>User data:</h3>
+        <ul>
+          <li>Username: {{ userData.username }}</li>
+          <li>First name: {{ userData.first_name }}</li>
+          <li>Last name: {{ userData.last_name }}</li>
+          <li>Birthday: {{ userData.birthday }}</li>
+          <li>Gender: {{ userData.gender }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row">
+      <p>Examples: run, walk.</p>
+      <input type="text" v-model="activityType" id="inp">
+      <button type="button" @click="getActivities" id="inp">Get activities</button>
+    </div>
+
+    <ul v-for="(item, index) in activitiesData" :key="index">
+      <li v-for="(item, key) in item" :key="key">{{key}}: {{item}}</li>
     </ul>
   </div>
 </template>
+
+<style>
+#inp {
+ width: 300px;
+}
+</style>
