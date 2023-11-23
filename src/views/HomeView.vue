@@ -22,12 +22,16 @@ export default {
     }
   },
 
-
   methods: {
     getUserData(){
       axios.get(`${this.apiPath}/user/${this.pathUsername}/`, {headers:{
         'Authorization': `Bearer ${this.token}`}})
-          .then(response => this.userData = response.data);
+          .then(response => this.userData = response.data)
+          .catch((err) => {
+            if (err === '401'){
+              this.isAuth = false;
+            }
+          });
     },
 
     parseToken(){
@@ -43,14 +47,14 @@ export default {
   },
 
   mounted() {
-    if (localStorage.getItem('access_token')){
+    if (this.token){
       this.parseToken();
       this.getUserData();
       this.isAuth = true;
     } else {
       this.isAuth = false;
     }
-  }
+  },
 };
 </script>
 
@@ -74,15 +78,30 @@ export default {
       </div>
     </div>
 
-    <div class="row">
+    <div class="row" v-if="isAuth === true">
       <p>Examples: run, walk.</p>
       <input type="text" v-model="activityType" id="inp">
       <button type="button" @click="getActivities" id="inp">Get activities</button>
     </div>
 
-    <ul v-for="(item, index) in activitiesData" :key="index">
-      <li v-for="(item, key) in item" :key="key">{{key}}: {{item}}</li>
-    </ul>
+    <div v-if="isAuth === true" class="row mt-3">
+      <div v-for="item in activitiesData" :key="item" class = "col">
+        <div class="card" style="width: 18rem;">
+          <img :src="require('@/assets/images/activities/' + this.activityType + '.png')" class="card-img-top" alt="{{this.activityType}}">
+          <div class="card-body">
+            <h5 class="card-title">{{ item.title }}</h5>
+            <p class="card-text">{{ item.description }}</p>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Distance: {{ item.distance }}</li>
+            <li class="list-group-item">Date: {{ item.date }}</li>
+          </ul>
+          <div class="card-footer text-center">
+            <p>Published: {{ item.published=1 }} | Visibility: {{ item.visibility }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
