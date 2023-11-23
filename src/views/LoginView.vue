@@ -16,7 +16,7 @@ export default {
   methods: {
     login(){
       const auth = `grant_type=&username=${this.form.username}&password=${this.form.password}&scope=&client_id=&client_secret=`
-      axios.post(`${this.$apiPath}/token`, auth)
+      axios.post(`/token`, auth)
           .then(response => localStorage.access_token = response.data.access_token);
     },
   },

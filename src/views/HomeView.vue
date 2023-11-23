@@ -13,6 +13,9 @@ export default {
       activityType: '',
       activitiesData: '',
       visibilities: ['Only me', 'Friends only', 'All'],
+      errors:{
+        errorActivity: false,
+      },
     }
   },
 
@@ -24,7 +27,7 @@ export default {
 
   methods: {
     getUserData(){
-      axios.get(`${this.$apiPath}/user/${this.pathUsername}/`, {headers:{
+      axios.get(`/user/${this.pathUsername}/`, {headers:{
         'Authorization': `Bearer ${this.token}`}})
           .then(response => this.userData = response.data)
           .catch((err) => {
@@ -39,9 +42,15 @@ export default {
     },
 
     getActivities(){
-      axios.get(`${this.$apiPath}/${this.pathUsername}/activities/${this.activityType}/`, {headers:{
+      axios.get(`/${this.pathUsername}/activities/${this.activityType}/`, {headers:{
           'Authorization': `Bearer ${this.token}`}})
-          .then(response => this.activitiesData = response.data);
+          .then(response => this.activitiesData = response.data)
+          .catch((err) => {
+            if (err === 404 || err === 'Not Found' || err === '404 Not Found'){
+              this.errors.errorActivity = true;
+            }
+          })
+      ;
 
     }
   },
