@@ -13,6 +13,7 @@ export default {
       tokenData: '',
       activityType: '',
       activitiesData: '',
+      visibilities: ['Only me', 'Friends only', 'All'],
     }
   },
 
@@ -97,7 +98,7 @@ export default {
             <li class="list-group-item">Date: {{ item.date }}</li>
           </ul>
           <div class="card-footer text-center">
-            <p>Published: {{ item.published=1 }} | Visibility: {{ item.visibility }}</p>
+            <p>Published: {{ item.published ? "yes" : "no" }} | Visibility: {{ visibilities[item.visibility] }}</p>
           </div>
         </div>
       </div>
